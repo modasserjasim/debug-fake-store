@@ -5,6 +5,7 @@ const loadProducts = (url) => {
       .then((res) => res.json())
       .then((data) => {
          arr.push(data);
+         console.log(arr);
          showProducts(data);
       });
 };
@@ -89,18 +90,22 @@ const setInnerText = (id, value) => {
 // update delivery charge and total Tax
 const updateTaxAndCharge = () => {
    const priceConverted = getInputValue('price');
-   if (priceConverted > 200) {
-      setInnerText('delivery-charge', 30);
-      setInnerText('total-tax', (priceConverted * 0.2).toFixed(2));
-   }
-   if (priceConverted > 400) {
-      setInnerText('delivery-charge', 50);
-      setInnerText('total-tax', (priceConverted * 0.3).toFixed(2));
-   }
    if (priceConverted > 500) {
       setInnerText('delivery-charge', 60);
       setInnerText('total-tax', (priceConverted * 0.4).toFixed(2));
    }
+   
+   else if (priceConverted > 400) {
+      setInnerText('delivery-charge', 50);
+      setInnerText('total-tax', (priceConverted * 0.3).toFixed(2));
+   }
+   else if (priceConverted > 200) {
+      setInnerText('delivery-charge', 30);
+      setInnerText('total-tax', (priceConverted * 0.2).toFixed(2));
+   } else{
+      setInnerText('delivery-charge', 10);
+   }
+   
 };
 
 //grandTotal update function
@@ -111,14 +116,13 @@ const updateTotal = () => {
       getInputValue('total-tax');
    document.getElementById('total').innerText = grandTotal.toFixed(2);
 };
-updateTotal();
 
 
 // search by category
 document.getElementById("search-btn").addEventListener("click", function () {
    const inputField = document.getElementById("input-value").value;
-   const searchedProduct = arr[0].find((p) =>
-     p.category.startsWith(`${inputField}`)
+   const searchedProduct = arr[0].filter((p) =>
+     p.title.toLowerCase().includes(inputField.toLowerCase())
    );
    showProducts(searchedProduct);
  });
